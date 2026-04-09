@@ -162,7 +162,11 @@
     function updateRecord(id, field, value) {
       const index = currentData.findIndex(d => d.id === id);
       if (index !== -1) {
-        currentData[index][field] = value;
+        if (field === '序号') {
+          currentData[index][field] = parseInt(value);
+        } else {
+          currentData[index][field] = value;
+        }
       }
     }
 
@@ -243,7 +247,11 @@
                 <tbody class="divide-y divide-gray-200">
                   ${currentData.map((item, index) => `
                     <tr class="hover:bg-gray-50 transition-colors duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">${item.序号}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                        ${isEditMode ? `
+                          <input type="number" value="${item.序号}" onchange="handleUpdate(${item.id}, '序号', this.value)" class="w-16 px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        ` : item.序号}
+                      </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         ${isEditMode ? `
                           <select onchange="handleUpdate(${item.id}, '是否启动', this.value)" class="px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
@@ -253,8 +261,16 @@
                           </select>
                         ` : item.是否启动}
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.进程名称}</td>
-                      <td class="px-6 py-4 text-sm text-gray-600">${item.程序路径}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${isEditMode ? `
+                          <input type="text" value="${item.进程名称}" onchange="handleUpdate(${item.id}, '进程名称', this.value)" class="w-32 px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        ` : item.进程名称}
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-600">
+                        ${isEditMode ? `
+                          <input type="text" value="${item.程序路径}" onchange="handleUpdate(${item.id}, '程序路径', this.value)" class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        ` : item.程序路径}
+                      </td>
                       ${isEditMode ? `
                         <td class="px-6 py-4 whitespace-nowrap">
                           <button onclick="confirmDelete(${item.id}, '${item.进程名称}')" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors">
